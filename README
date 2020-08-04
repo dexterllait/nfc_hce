@@ -1,0 +1,42 @@
+Android NFC Host Card Emulate
+
+Create HostAPDUService and add it on AndroidManifest.xml
+
+        ```
+        <service
+            android:name=".controller.service.HCEService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE">
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/aid_list" />
+        </service>
+        ```
+
+Add aid_list.xml file, define the AID for this application.
+
+
+Connect
+ 00 A4 04 00 08 00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 00
+|--SELECT--| |  |-------------------AID-----------------------| |
+      |--AID Length--|                                     |-Last 00-|
+      
+Send Data
+
+Start:  00 00 00 00 00 00 00 XX 
+        |--Start--| |-Data Len-|
+        
+Middle: 00 00 00 0X XX XX ... XX
+        |--Index--| |-100 Leng-|
+        
+End:    FF FF FF FF 
+        |---End---|
+        
+Response
+
+Success: 90 00
+Fail: tF00
